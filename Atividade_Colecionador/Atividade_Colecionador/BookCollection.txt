@@ -1,0 +1,385 @@
+
+<!DOCTYPE html>
+<head>
+	<title>Julia's Collection</title>
+<style>
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Poppins', sans-serif;
+    background: linear-gradient(135deg, #fffdf9, #fff6f0, #fffaf4);
+    color: #6b4f3a;
+    padding: 40px;
+}
+
+/* HEADER */
+header {
+    text-align: center;
+    padding: 50px 20px;
+    background: #ffffff;
+    border-radius: 25px;
+    margin-bottom: 60px;
+    box-shadow: 0 6px 20px rgba(212,175,55,0.15);
+}
+
+h1 {
+    font-size: 2.5rem;
+    color: #c9a227;
+}
+
+h2 {
+    text-align: center;
+    margin: 70px 0 40px;
+    font-size: 2rem;
+    color: #d4af37;
+}
+
+h3 {
+    text-align: center;
+    font-size: 1.4rem;
+    margin-bottom: 30px;
+    color: #bfa14a;
+}
+
+/* SOBRE */
+section p {
+    max-width: 900px;
+    line-height: 1.8;
+    text-align: left;
+    margin: 0 auto;
+}
+
+/* PAÍSES */
+section:nth-of-type(2) div {
+    display: flex;
+    justify-content: center;
+    gap: 40px;
+    flex-wrap: wrap;
+}
+
+section:nth-of-type(2) img {
+    width: 130px;
+    height: 130px;
+    object-fit: cover;
+    border-radius: 50%;
+    box-shadow: 0 6px 18px rgba(212,175,55,0.25);
+}
+
+/* ===== GRID PADRÃO PARA TODAS AS TRILOGIAS ===== */
+section > div > div {
+    display: flex !important;
+    justify-content: center !important;
+    align-items: stretch !important;
+    flex-wrap: wrap !important;
+    gap: 30px;
+    margin-bottom: 40px;
+}
+
+/* ===== CARD PADRÃO ÚNICO (FORÇA TODOS IGUAIS, INCLUSIVE WALTER BOYS) ===== */
+section > div > div > div {
+    background: #ffffff;
+    padding: 25px;
+    border-radius: 20px;
+    width: 260px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: 0 6px 18px rgba(212,175,55,0.12);
+}
+
+/* IMAGENS TODAS DO MESMO TAMANHO */
+section > div > div > div img {
+    width: 150px;
+    height: 220px;
+    object-fit: cover;
+    border-radius: 10px;
+    margin-bottom: 15px;
+}
+
+/* TÍTULOS IGUAIS */
+section > div > div > div h4,
+section > div > div > div h3 {
+    text-align: center;
+    font-size: 1rem;
+    margin-bottom: 12px;
+    min-height: 48px;
+}
+
+/* TEXTOS ALINHADOS */
+section > div > div > div p {
+    width: 100%;
+    font-size: 0.9rem;
+    margin-bottom: 5px;
+    text-align: left;
+}
+
+/* NOTA CENTRALIZADA */
+section > div > div > div p:last-child {
+    text-align: center;
+    margin-top: 10px;
+    font-weight: 600;
+    color: #c9a227;
+}
+
+/* BOTÃO */
+button {
+    display: block;
+    margin: 20px auto;
+    padding: 10px 25px;
+    border: 1px solid #d4af37;
+    border-radius: 25px;
+    background: #fffaf0;
+    color: #bfa14a;
+    cursor: pointer;
+}
+
+/* SINOPSE */
+button + div {
+    max-width: 800px;
+    margin: 20px auto 50px;
+    text-align: center;
+    line-height: 1.7;
+    background: #ffffff;
+    padding: 20px;
+    border-radius: 15px;
+    box-shadow: 0 4px 15px rgba(212,175,55,0.1);
+}
+
+/* FOOTER */
+footer {
+    text-align: center;
+    padding: 40px;
+    margin-top: 60px;
+    background: #ffffff;
+    border-radius: 20px;
+    box-shadow: 0 6px 20px rgba(212,175,55,0.15);
+}
+
+</style>
+
+	
+</head>
+
+<body>
+
+    <header>
+        <h1>Bem-vindos à minha coleção</h1>
+        <h3>Um dos livros mais famosos do Booktok</h3>
+    </header>
+
+    <section>
+        <h2>Sobre a Colecionadora</h2>
+
+        <p>
+            Meu nome é Julia, comecei a ler em abril de 2025 e o que era apenas um hobby acabou virando algo leve, gostoso e especial pra mim. Comecei comprando livros na Amazon sempre que entrava em promoção e, quando percebi, já estava completamente envolvida nesse universo. Até fevereiro de 2026 já li 12 livros e são esses que vou demonstrar aqui na minha coleção. Meu gênero favorito é romance, mas também adoro um suspense — embora suspense eu deixe mais para séries enquanto mergulho de verdade nos romances nos livros.
+        </p>
+    </section>
+
+
+    <section>
+        <h2>Países de origem dos livros lidos</h2>
+
+        <div>
+            <img src="alemanha.jpg" alt="Alemanha">
+            <img src="eua.jpg" alt="Estados Unidos">
+            <img src="irlanda.PNG" alt="Irlanda">
+        </div>
+    </section>
+
+    <section>
+        <h2>Romance</h2>
+
+        <div>
+            <h3>Maxton Hall (Trilogia)</h3>
+
+            <div>
+
+                <div>
+                    <h4>Save Me - Salve-me </h4>
+                    <img src="maxton1.jpg" alt="">
+                    <p>Autora: Mona Kasten</p>
+                    <p>Editora: Alt</p>
+                    <p>Lançamento (Brasil): Outubro/2024</p>
+                    <p>Páginas: 352</p>
+                    <p>Nota: 10/10</p>
+                </div>
+
+                <div>
+                    <h4>Save You - Salve-se</h4>
+                    <img src="maxton2.jpg" alt="">
+                    <p>Autora: Mona Kasten</p>
+                    <p>Editora: Alt</p>
+                    <p>Lançamento (Brasil): Abril/2025</p>
+                    <p>Páginas: 328</p>
+                    <p>Nota: 9/10</p>
+                </div>
+
+                <div>
+                    <h4>Save Us - Salve-nos </h4>
+                    <img src="maxton3.png" alt="">
+                    <p>Autora: Mona Kasten</p>
+                    <p>Editora: Alt</p>
+                    <p>Lançamento (Brasil): Setembro/2025</p>
+                    <p>Páginas: 336</p>
+                    <p>Nota: 9,5/10</p>
+                </div>
+
+            </div>
+        </div>
+
+        <div>
+            <h3>O Verão que Mudou Minha Vida (Trilogia)</h3>
+
+            <div>
+
+                <div>
+                    <h4>The Summer I Turned Pretty - O Verão que Mudou Minha Vida</h4>
+                    <img src="overaoqmudou1.jpg" alt="">
+                    <p>Autora: Jenny Han</p>
+                    <p>Editora: (Brasil) Intrínseca</p>
+		    <p>Editora: (Original) Simon & Schuster</p>
+                    <p>Lançamento (Brasil): Janeiro/2019</p>
+                    <p>Páginas: 276</p>
+                    <p>Nota: 10/10</p>
+                </div>
+
+                <div>
+                    <h4>It's Not Summer Without You - Sem Você Não é Verão</h4>
+                    <img src="overaoqmudou2.jpg" alt="">
+                    <p>Autora: Jenny Han</p>
+                    <p>Editora: Intrínseca</p>
+                    <p>Lançamento (Brasil): Maio/2019</p>
+                    <p>Páginas: 288</p>
+                    <p>Nota: 8/10</p>
+                </div>
+
+                <div>
+                    <h4>We'll Always Have Summer -Sempre Teremos Verão</h4>
+                    <img src="overaoqmudou3.jpg" alt="">
+                    <p>Autora: Jenny Han</p>
+                    <p>Editora: Intrínseca</p>
+                    <p>Lançamento (Brasil): Novembro/2025</p>
+                    <p>Páginas: 291</p>
+                    <p>Nota: 9,5/10</p>
+                </div>
+
+            </div>
+        </div>
+
+<div>
+
+    <h3>Walter Boys (Duologia)</h3>
+
+    <div>
+
+        <div>
+            <h4>My Life with the Walter Boys - O Verão com a Família dos Walter</h4>
+            <img src="walterboys1.jpg" alt="">
+            <p>Autora: Ali Novak</p>
+            <p>Editora: Plataforma21</p>
+            <p>Lançamento (Brasil): 2023</p>
+            <p>Páginas: 358</p>
+            <p>Nota: 8/10</p>
+        </div>
+
+        <div>
+            <h4>My Return to the Walter Boys - Meu Retorno com os Garotos Walter</h4>
+            <img src="walterboys2.jpg" alt="">
+            <p>Autora: Ali Novak</p>
+            <p>Editora: Plataforma21</p>
+            <p>Lançamento (Brasil): Abril/2025</p>
+            <p>Páginas: 336</p>
+            <p>Nota: Não lido</p>
+        </div>
+
+    </div>
+</div>
+
+        <div>
+            <h3>Divinos Rivais (Duologia)</h3>
+
+            <div>
+
+                <div>
+                    <h4>Divine Rivals - Divinos Rivais</h4>
+                    <img src="divinos1.jpg" alt="">
+                    <p>Autora: Rebecca Ross</p>
+                    <p>Editora: Alt</p>
+                    <p>Lançamento (Brasil): Dezembro/2023</p>
+                    <p>Páginas: 464</p>
+                    <p>Nota: 9,5/10</p>
+                </div>
+
+                <div>
+                    <h4>Cruel Promises - Promessas Cruéis</h4>
+                    <img src="divinos2.jpg" alt="">
+                    <p>Autora: Rebecca Ross</p>
+                    <p>Editora: Alt</p>
+                    <p>Lançamento (Brasil): 2024</p>
+                    <p>Páginas: 448</p>
+                    <p>Nota: 9/10</p>
+                </div>
+
+            </div>
+        </div>
+
+    </section>
+
+    <section>
+        <h2>Suspense</h2>
+
+        <div>
+            <h3>One of Us Is Lying - Um de Nós Está Mentindo (Trilogia)</h3>
+
+            <div>
+
+                <div>
+                    <h4>One of Us is Lying - Um de Nós Está Mentindo</h4>
+                    <img src="umdenos1.jpg" alt="">
+                    <p>Autora: Karen M. McManus</p>
+                    <p>Editora: Galera Record</p>
+                    <p>Lançamento (Brasil): Maio/2017</p>
+                    <p>Páginas: 368</p>
+                    <p>Nota: 9/10</p>
+                </div>
+
+                <div>
+                    <h4>One of Us Is Next - Um de Nós é o Próximo</h4>
+                    <img src="umdenos2.jpg" alt="">
+                    <p>Autora: Karen M. McManus</p>
+                    <p>Editora: Galera Record</p>
+                    <p>Lançamento (Brasil): Janeiro/2020</p>
+                    <p>Páginas: 384</p>
+                    <p>Nota: 7/10</p>
+                </div>
+
+                <div>
+                    <h4>One of Us Is Back - Os Mortos Não Guardam Segredo</h4>
+                    <img src="umdenos3.jpg" alt="">
+                    <p>Autora: Karen M. McManus</p>
+                    <p>Editora: Galera Record</p>
+                    <p>Lançamento (Brasil): Julho/2023</p>
+                    <p>Páginas: 352</p>
+                    <p>Nota: 8/10</p>
+                </div>
+
+            </div>
+        </div>
+
+    </section>
+
+    <footer>
+        <p>
+            Julia's Collection © 2026 — Cada livro aqui representa uma fase,
+            uma emoção e um pedaço da minha história 📖✨
+        </p>
+    </footer>
+
+</body>
+</html>
