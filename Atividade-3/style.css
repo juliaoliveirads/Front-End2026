@@ -47,7 +47,9 @@ body{
 }
 
 #menu-principal a:hover{
-  color:#3be25a;
+  color:#064a12;
+  background-color: #75d1ff;
+  border-radius: 5px;
 }
 
 /*PIONEIROS*/
@@ -613,3 +615,4 @@ footer{
   padding:20px;
   margin-top:40px;
 }
+
