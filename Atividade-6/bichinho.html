@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Meu Bichinho</title>
+
+    <style>
+        body {
+            margin: 0;
+            height: 100vh;
+            background-color: #BFFFF8;
+            overflow: hidden;
+        }
+
+        .container {
+            position: relative;
+            width: 100%;
+            height: 100%;
+        }
+
+        #fundo {
+            position: absolute;
+            bottom: 10%;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 900px;
+            z-index: 1;
+        }
+
+        #bicho {
+            position: absolute;
+            bottom: 38%;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 300px;
+            z-index: 2;
+        }
+
+        #btn {
+            position: absolute;
+            right: 40px;
+            bottom: 40px;
+            width: 200px;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        #btn:active {
+            transform: scale(0.9);
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="container">
+        <img id="fundo" src="ilha.png">
+        <img id="bicho" src="bb.png">
+        <img id="btn" src="fruta.png" onclick="alimentar()">
+    </div>
+
+    <script src="script.js"></script>
+
+</body>
+</html>
