@@ -1,0 +1,48 @@
+body{
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background-color: #f2f6ff;
+}
+
+h1{
+    text-align: center;
+    margin: 20px 0;
+    color: #0160e4;
+}
+
+.container{
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    padding: 20px;
+}
+
+.card{
+    background: white;
+    border-radius: 10px;
+    padding: 15px;
+    width: 260px;
+    border: 3px;
+}
+
+.card h2{
+    text-align: center;
+    color: #790707;
+}
+
+.card details{
+    margin-top: 10px;
+    padding: 8px;
+    background: #f0f4ff;
+    border-radius: 6px;
+}
+/*PARA O EXC 3 PRA FRENTE:*/
+button {
+    display: block;
+    margin: 20px auto;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 8px;
+    background-color: rgb(0, 0, 255);
+    color: white;
+}
