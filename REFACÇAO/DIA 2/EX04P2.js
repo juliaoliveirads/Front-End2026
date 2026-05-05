@@ -1,5 +1,8 @@
-function add() {
+let acionar = 0;
 
+function add(){
+
+    if(acionar === 0){
     const container = document.getElementById("Cards");
 
     container.innerHTML += `
@@ -20,6 +23,7 @@ function add() {
             </p>
         </div>
     </div>
-
     `;
+    acionar = 1;
+    }
 }
