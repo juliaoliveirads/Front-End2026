@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Exercício 06 – Crédito para Festas & Eventos</title>
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;700;800&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #0b0c10;
+      --surface: #13141a;
+      --surface2: #1a1b22;
+      --border: #222430;
+      --gold: #c9a84c;
+      --gold-light: #e8c97a;
+      --text: #e8e8f0;
+      --muted: #6b6d80;
+      --radius: 12px;
+    }
+
+    body {
+      font-family: 'Syne', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 2rem;
+    }
+
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background: radial-gradient(ellipse 60% 50% at 50% -10%, rgba(201,168,76,.10), transparent);
+      pointer-events: none;
+    }
+
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 3rem 2.5rem;
+      width: 100%;
+      max-width: 500px;
+      box-shadow: 0 24px 64px rgba(0,0,0,.5);
+      animation: fadeUp .5s ease both;
+    }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(20px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    .badge {
+      display: inline-block;
+      font-family: 'DM Mono', monospace;
+      font-size: .7rem;
+      letter-spacing: .1em;
+      color: var(--gold);
+      border: 1px solid var(--gold);
+      border-radius: 4px;
+      padding: 2px 8px;
+      margin-bottom: 1rem;
+    }
+
+    h1 { font-size: 1.7rem; font-weight: 800; margin-bottom: .4rem; }
+    h1 span { color: var(--gold); }
+    p.sub { color: var(--muted); font-size: .88rem; margin-bottom: 2rem; }
+
+    .pacotes {
+      display: flex;
+      gap: .7rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .pacote-btn {
+      flex: 1;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      color: var(--muted);
+      font-family: 'Syne', sans-serif;
+      font-size: .8rem;
+      font-weight: 700;
+      padding: .75rem .5rem;
+      text-align: center;
+      cursor: pointer;
+      transition: border-color .2s, color .2s, background .2s;
+    }
+
+    .pacote-btn .preco { display: block; font-family: 'DM Mono', monospace; font-size: .72rem; color: var(--muted); margin-top: .2rem; font-weight: 400; }
+
+    .pacote-btn.ativo {
+      border-color: var(--gold);
+      color: var(--gold);
+      background: rgba(201,168,76,.08);
+    }
+
+    .pacote-btn.ativo .preco { color: var(--gold-light); }
+
+    .form-group { margin-bottom: 1.4rem; }
+
+    label {
+      display: block;
+      font-size: .75rem;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: .45rem;
+    }
+
+    input[type="number"] {
+      width: 100%;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      color: var(--text);
+      font-family: 'DM Mono', monospace;
+      font-size: 1.4rem;
+      padding: .8rem 1rem;
+      outline: none;
+      transition: border-color .2s;
+      -moz-appearance: textfield;
+    }
+
+    input::-webkit-inner-spin-button,
+    input::-webkit-outer-spin-button { -webkit-appearance: none; }
+
+    input:focus { border-color: var(--gold); }
+
+    button.calcular {
+      width: 100%;
+      background: var(--gold);
+      color: #0b0c10;
+      border: none;
+      border-radius: var(--radius);
+      font-family: 'Syne', sans-serif;
+      font-size: 1rem;
+      font-weight: 700;
+      padding: .9rem;
+      cursor: pointer;
+      transition: background .2s, transform .1s;
+    }
+
+    button.calcular:hover  { background: var(--gold-light); }
+    button.calcular:active { transform: scale(.98); }
+
+    .resumo {
+      display: none;
+      margin-top: 1.8rem;
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      overflow: hidden;
+      animation: fadeUp .3s ease;
+    }
+
+    .resumo.show { display: block; }
+
+    .resumo-titulo {
+      background: var(--bg);
+      padding: .7rem 1.2rem;
+      font-size: .7rem;
+      letter-spacing: .1em;
+      text-transform: uppercase;
+      color: var(--muted);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .linha {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: .75rem 1.2rem;
+      border-bottom: 1px solid var(--border);
+      font-size: .92rem;
+    }
+
+    .linha:last-child { border-bottom: none; }
+    .linha .chave { color: var(--muted); }
+    .linha .valor { font-family: 'DM Mono', monospace; }
+
+    .linha.destaque .chave { color: var(--text); font-weight: 700; }
+    .linha.destaque .valor { color: var(--gold); font-size: 1.2rem; }
+
+    .linha.desconto .valor { color: #22c55e; }
+
+    .tag-desconto {
+      background: rgba(34,197,94,.1);
+      border: 1px solid #22c55e;
+      color: #22c55e;
+      font-size: .68rem;
+      font-family: 'DM Mono', monospace;
+      padding: 2px 7px;
+      border-radius: 4px;
+      margin-left: .5rem;
+    }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <span class="badge">EX 06</span>
+    <h1>Crédito para <span>Festas & Eventos</span></h1>
+    <p class="sub">Infinity Bank — Simule o orçamento do seu evento corporativo.</p>
+
+    <label>Pacote de Serviço</label>
+    <div class="pacotes">
+      <div class="pacote-btn ativo" data-val="50"   onclick="selecionarPacote(this)">Standard<span class="preco">R$ 50/pessoa</span></div>
+      <div class="pacote-btn"       data-val="80"   onclick="selecionarPacote(this)">Premium<span class="preco">R$ 80/pessoa</span></div>
+      <div class="pacote-btn"       data-val="120"  onclick="selecionarPacote(this)">Infinity Deluxe<span class="preco">R$ 120/pessoa</span></div>
+    </div>
+
+    <div class="form-group">
+      <label>Quantidade de Convidados</label>
+      <input type="number" id="pessoas" placeholder="Ex: 80" min="1" step="1"/>
+    </div>
+
+    <button class="calcular" onclick="calcular()">Calcular Orçamento</button>
+
+    <div class="resumo" id="resumo">
+      <div class="resumo-titulo">Detalhamento do Orçamento</div>
+      <div class="linha">
+        <span class="chave">Pacote Selecionado</span>
+        <span class="valor" id="r-pacote">—</span>
+      </div>
+      <div class="linha">
+        <span class="chave">Convidados</span>
+        <span class="valor" id="r-pessoas">—</span>
+      </div>
+      <div class="linha">
+        <span class="chave">Custo Bruto</span>
+        <span class="valor" id="r-bruto">—</span>
+      </div>
+      <div class="linha">
+        <span class="chave">Taxa de Serviço (+10%)</span>
+        <span class="valor" id="r-taxa">—</span>
+      </div>
+      <div class="linha desconto" id="linha-desconto" style="display:none">
+        <span class="chave">Desconto Fidelidade (−5%) <span class="tag-desconto">+100 convidados</span></span>
+        <span class="valor" id="r-desconto">—</span>
+      </div>
+      <div class="linha destaque">
+        <span class="chave">Total Final</span>
+        <span class="valor" id="r-total">—</span>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    let pacoteVal = 50;
+    let pacoteNome = 'Standard';
+
+    function selecionarPacote(el) {
+      document.querySelectorAll('.pacote-btn').forEach(b => b.classList.remove('ativo'));
+      el.classList.add('ativo');
+      pacoteVal  = parseFloat(el.dataset.val);
+      pacoteNome = el.firstChild.textContent.trim();
+    }
+
+    function fmt(v) {
+      return 'R$ ' + v.toFixed(2).replace('.', ',').replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+    }
+
+    function calcular() {
+      const pessoas = parseInt(document.getElementById('pessoas').value) || 0;
+      if (pessoas < 1) return;
+
+      const bruto     = pacoteVal * pessoas;
+      const taxa      = bruto * 0.10;
+      const comTaxa   = bruto + taxa;
+      const temDesc   = pessoas > 100;
+      const desconto  = temDesc ? comTaxa * 0.05 : 0;
+      const total     = comTaxa - desconto;
+
+      document.getElementById('r-pacote').textContent  = `${pacoteNome} — ${fmt(pacoteVal)}/pessoa`;
+      document.getElementById('r-pessoas').textContent = `${pessoas} pessoa${pessoas > 1 ? 's' : ''}`;
+      document.getElementById('r-bruto').textContent   = fmt(bruto);
+      document.getElementById('r-taxa').textContent    = fmt(taxa);
+      document.getElementById('r-total').textContent   = fmt(total);
+
+      const linhaDesc = document.getElementById('linha-desconto');
+      if (temDesc) {
+        linhaDesc.style.display = 'flex';
+        document.getElementById('r-desconto').textContent = `− ${fmt(desconto)}`;
+      } else {
+        linhaDesc.style.display = 'none';
+      }
+
+      document.getElementById('resumo').classList.add('show');
+    }
+  </script>
+</body>
+</html>

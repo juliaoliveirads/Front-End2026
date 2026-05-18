@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Exercício 01 – Validador de CPF</title>
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;700;800&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #0b0c10;
+      --surface: #13141a;
+      --border: #222430;
+      --gold: #c9a84c;
+      --gold-light: #e8c97a;
+      --text: #e8e8f0;
+      --muted: #6b6d80;
+      --success: #2ecc71;
+      --danger: #e74c3c;
+      --radius: 12px;
+    }
+
+    body {
+      font-family: 'Syne', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 2rem;
+    }
+
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background: radial-gradient(ellipse 60% 50% at 50% -10%, rgba(201,168,76,.12), transparent);
+      pointer-events: none;
+    }
+
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 3rem 2.5rem;
+      width: 100%;
+      max-width: 440px;
+      box-shadow: 0 24px 64px rgba(0,0,0,.5);
+      animation: fadeUp .5s ease both;
+    }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(20px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    .badge {
+      display: inline-block;
+      font-family: 'DM Mono', monospace;
+      font-size: .7rem;
+      letter-spacing: .1em;
+      color: var(--gold);
+      border: 1px solid var(--gold);
+      border-radius: 4px;
+      padding: 2px 8px;
+      margin-bottom: 1rem;
+    }
+
+    h1 {
+      font-size: 1.8rem;
+      font-weight: 800;
+      line-height: 1.15;
+      margin-bottom: .5rem;
+    }
+
+    h1 span { color: var(--gold); }
+
+    p.sub {
+      color: var(--muted);
+      font-size: .9rem;
+      margin-bottom: 2rem;
+    }
+
+    label {
+      display: block;
+      font-size: .8rem;
+      letter-spacing: .08em;
+      color: var(--muted);
+      margin-bottom: .5rem;
+      text-transform: uppercase;
+    }
+
+    input[type="text"] {
+      width: 100%;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      color: var(--text);
+      font-family: 'DM Mono', monospace;
+      font-size: 1.4rem;
+      letter-spacing: .15em;
+      padding: .85rem 1.1rem;
+      outline: none;
+      transition: border-color .2s;
+      margin-bottom: 1.25rem;
+    }
+
+    input[type="text"]:focus { border-color: var(--gold); }
+
+    button {
+      width: 100%;
+      background: var(--gold);
+      color: #0b0c10;
+      border: none;
+      border-radius: var(--radius);
+      font-family: 'Syne', sans-serif;
+      font-size: 1rem;
+      font-weight: 700;
+      letter-spacing: .04em;
+      padding: .9rem;
+      cursor: pointer;
+      transition: background .2s, transform .1s;
+    }
+
+    button:hover  { background: var(--gold-light); }
+    button:active { transform: scale(.98); }
+
+    .result {
+      margin-top: 1.5rem;
+      border-radius: var(--radius);
+      padding: 1rem 1.25rem;
+      display: none;
+      font-weight: 700;
+      font-size: 1.05rem;
+      align-items: center;
+      gap: .6rem;
+    }
+
+    .result.show   { display: flex; animation: fadeUp .3s ease; }
+    .result.valid  { background: rgba(46,204,113,.1); border: 1px solid var(--success); color: var(--success); }
+    .result.invalid{ background: rgba(231,76,60,.1);  border: 1px solid var(--danger);  color: var(--danger); }
+
+    .result .icon { font-size: 1.3rem; }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <span class="badge">EX 01</span>
+    <h1>Validador de <span>CPF</span></h1>
+    <p class="sub">Insira o CPF com ou sem formatação para verificar a validade.</p>
+
+    <label for="cpf">Número do CPF</label>
+    <input type="text" id="cpf" placeholder="000.000.000-00" maxlength="14" />
+
+    <button onclick="validar()">Validar CPF</button>
+
+    <div class="result" id="resultado">
+      <span class="icon" id="icon"></span>
+      <span id="msg"></span>
+    </div>
+  </div>
+
+  <script>
+    document.getElementById('cpf').addEventListener('input', function () {
+      let v = this.value.replace(/\D/g, '');
+      if (v.length > 9)  v = v.replace(/(\d{3})(\d{3})(\d{3})(\d{0,2})/, '$1.$2.$3-$4');
+      else if (v.length > 6) v = v.replace(/(\d{3})(\d{3})(\d{0,3})/, '$1.$2.$3');
+      else if (v.length > 3) v = v.replace(/(\d{3})(\d{0,3})/, '$1.$2');
+      this.value = v;
+    });
+
+    function validar() {
+      const raw = document.getElementById('cpf').value.replace(/\D/g, '');
+      const res = document.getElementById('resultado');
+      const msg = document.getElementById('msg');
+      const ico = document.getElementById('icon');
+
+      res.className = 'result';
+
+      const show = (valid) => {
+        res.classList.add('show', valid ? 'valid' : 'invalid');
+        ico.textContent = valid ? '✔' : '✘';
+        msg.textContent = valid ? 'CPF válido!' : 'CPF inválido.';
+      };
+
+      if (raw.length !== 11 || /^(\d)\1+$/.test(raw)) return show(false);
+
+      const calc = (digits, len) => {
+        let sum = 0;
+        for (let i = 0; i < len; i++) sum += parseInt(digits[i]) * (len + 1 - i);
+        const rem = (sum * 10) % 11;
+        return rem === 10 ? 0 : rem;
+      };
+
+      const d1 = calc(raw, 9);
+      const d2 = calc(raw, 10);
+      show(d1 === parseInt(raw[9]) && d2 === parseInt(raw[10]));
+    }
+
+    document.getElementById('cpf').addEventListener('keydown', e => {
+      if (e.key === 'Enter') validar();
+    });
+  </script>
+</body>
+</html>

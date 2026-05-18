@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Exercício 07 – Card Guard Infinity</title>
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;700;800&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #0b0c10;
+      --surface: #13141a;
+      --surface2: #1a1b22;
+      --border: #222430;
+      --gold: #c9a84c;
+      --gold-light: #e8c97a;
+      --text: #e8e8f0;
+      --muted: #6b6d80;
+      --success: #22c55e;
+      --danger: #ef4444;
+      --radius: 12px;
+    }
+
+    body {
+      font-family: 'Syne', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 2rem;
+    }
+
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background: radial-gradient(ellipse 60% 50% at 50% -10%, rgba(201,168,76,.10), transparent);
+      pointer-events: none;
+    }
+
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 3rem 2.5rem;
+      width: 100%;
+      max-width: 500px;
+      box-shadow: 0 24px 64px rgba(0,0,0,.5);
+      animation: fadeUp .5s ease both;
+    }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(20px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    .badge {
+      display: inline-block;
+      font-family: 'DM Mono', monospace;
+      font-size: .7rem;
+      letter-spacing: .1em;
+      color: var(--gold);
+      border: 1px solid var(--gold);
+      border-radius: 4px;
+      padding: 2px 8px;
+      margin-bottom: 1rem;
+    }
+
+    h1 { font-size: 1.7rem; font-weight: 800; margin-bottom: .4rem; }
+    h1 span { color: var(--gold); }
+    p.sub { color: var(--muted); font-size: .88rem; margin-bottom: 2rem; }
+
+    /* Preview card */
+    .card-preview {
+      background: linear-gradient(135deg, #1c1d26 0%, #2a2b38 100%);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 1.5rem;
+      margin-bottom: 1.8rem;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .card-preview::before {
+      content: '';
+      position: absolute;
+      top: -30px; right: -30px;
+      width: 120px; height: 120px;
+      border-radius: 50%;
+      background: rgba(201,168,76,.08);
+    }
+
+    .card-preview .chip {
+      width: 36px; height: 28px;
+      background: linear-gradient(135deg, var(--gold), #8a6e2a);
+      border-radius: 5px;
+      margin-bottom: 1rem;
+    }
+
+    .card-preview .numero {
+      font-family: 'DM Mono', monospace;
+      font-size: 1.2rem;
+      letter-spacing: .18em;
+      color: var(--text);
+      margin-bottom: .6rem;
+      min-height: 1.6rem;
+    }
+
+    .card-preview .bandeira-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .card-preview .bandeira-nome {
+      font-size: .8rem;
+      color: var(--muted);
+      font-family: 'DM Mono', monospace;
+    }
+
+    .card-preview .status-badge {
+      font-size: .7rem;
+      font-family: 'DM Mono', monospace;
+      font-weight: 700;
+      padding: 3px 10px;
+      border-radius: 4px;
+      display: none;
+    }
+
+    .status-badge.valido   { display: inline-block; background: rgba(34,197,94,.15); color: var(--success); border: 1px solid var(--success); }
+    .status-badge.invalido { display: inline-block; background: rgba(239,68,68,.15);  color: var(--danger);  border: 1px solid var(--danger); }
+
+    label {
+      display: block;
+      font-size: .75rem;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: .45rem;
+    }
+
+    input[type="text"] {
+      width: 100%;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      color: var(--text);
+      font-family: 'DM Mono', monospace;
+      font-size: 1.5rem;
+      letter-spacing: .2em;
+      padding: .85rem 1rem;
+      outline: none;
+      transition: border-color .2s;
+      margin-bottom: 1.2rem;
+    }
+
+    input:focus { border-color: var(--gold); }
+
+    button {
+      width: 100%;
+      background: var(--gold);
+      color: #0b0c10;
+      border: none;
+      border-radius: var(--radius);
+      font-family: 'Syne', sans-serif;
+      font-size: 1rem;
+      font-weight: 700;
+      padding: .9rem;
+      cursor: pointer;
+      transition: background .2s, transform .1s;
+    }
+
+    button:hover  { background: var(--gold-light); }
+    button:active { transform: scale(.98); }
+
+    .painel {
+      display: none;
+      margin-top: 1.8rem;
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      overflow: hidden;
+      animation: fadeUp .3s ease;
+    }
+
+    .painel.show { display: block; }
+
+    .painel-titulo {
+      background: var(--bg);
+      padding: .7rem 1.2rem;
+      font-size: .7rem;
+      letter-spacing: .1em;
+      text-transform: uppercase;
+      color: var(--muted);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .linha {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: .75rem 1.2rem;
+      border-bottom: 1px solid var(--border);
+      font-size: .9rem;
+    }
+
+    .linha:last-child { border-bottom: none; }
+    .linha .chave { color: var(--muted); }
+    .linha .valor { font-family: 'DM Mono', monospace; }
+
+    .linha .valor.ok  { color: var(--success); }
+    .linha .valor.err { color: var(--danger); }
+    .linha .valor.gold { color: var(--gold); }
+
+    .linha.destaque .chave { font-weight: 700; color: var(--text); }
+    .linha.destaque .valor { font-size: 1rem; }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <span class="badge">EX 07</span>
+    <h1>Card <span>Guard</span> Infinity</h1>
+    <p class="sub">Valide o número do cartão com o Algoritmo de Luhn e identifique a bandeira.</p>
+
+    <div class="card-preview">
+      <div class="chip"></div>
+      <div class="numero" id="prev-numero">•••• •••• •••• ••••</div>
+      <div class="bandeira-row">
+        <span class="bandeira-nome" id="prev-bandeira">INFINITY BANK</span>
+        <span class="status-badge" id="prev-status">—</span>
+      </div>
+    </div>
+
+    <label>Número do Cartão (até 16 dígitos)</label>
+    <input type="text" id="cartao" placeholder="0000 0000 0000 0000" maxlength="19" oninput="formatarCartao(this)"/>
+
+    <button onclick="analisar()">Analisar Cartão</button>
+
+    <div class="painel" id="painel">
+      <div class="painel-titulo">Painel de Informações — IIN / BIN</div>
+      <div class="linha destaque">
+        <span class="chave">Status Luhn</span>
+        <span class="valor" id="p-status">—</span>
+      </div>
+      <div class="linha">
+        <span class="chave">Bandeira</span>
+        <span class="valor gold" id="p-bandeira">—</span>
+      </div>
+      <div class="linha">
+        <span class="chave">Categoria de Setor (1º dígito)</span>
+        <span class="valor" id="p-setor">—</span>
+      </div>
+      <div class="linha">
+        <span class="chave">Banco Emissor (dígitos 2–5)</span>
+        <span class="valor" id="p-banco">—</span>
+      </div>
+      <div class="linha">
+        <span class="chave">Tipo de Produto (dígitos 6–8)</span>
+        <span class="valor" id="p-produto">—</span>
+      </div>
+      <div class="linha">
+        <span class="chave">Comprimento</span>
+        <span class="valor" id="p-len">—</span>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    function formatarCartao(el) {
+      let v = el.value.replace(/\D/g, '').substring(0, 16);
+      el.value = v.match(/.{1,4}/g)?.join(' ') || v;
+      atualizarPreview(v);
+    }
+
+    function atualizarPreview(raw) {
+      const formatted = (raw.match(/.{1,4}/g)?.join(' ') || '').padEnd(19, '•').replace(/ /g, ' ');
+      const display   = formatted.length > 0 && raw.length > 0
+        ? (raw.match(/.{1,4}/g)?.join(' ') || '').padEnd(19)
+        : '•••• •••• •••• ••••';
+      document.getElementById('prev-numero').textContent  = display;
+      document.getElementById('prev-bandeira').textContent = getBandeira(raw).nome;
+    }
+
+    function luhn(raw) {
+      let sum = 0;
+      const rev = raw.split('').reverse();
+      for (let i = 0; i < rev.length; i++) {
+        let d = parseInt(rev[i]);
+        if (i % 2 === 1) { d *= 2; if (d > 9) d -= 9; }
+        sum += d;
+      }
+      return sum % 10 === 0;
+    }
+
+    function getBandeira(raw) {
+      if (/^4/.test(raw))                               return { nome: 'Visa',       cor: '#1a1f71' };
+      if (/^5[1-5]/.test(raw) || /^2[2-7]/.test(raw)) return { nome: 'Mastercard', cor: '#eb001b' };
+      if (/^3[47]/.test(raw))                          return { nome: 'Amex',       cor: '#016fd0' };
+      if (/^6(?:011|5)/.test(raw))                     return { nome: 'Discover',   cor: '#f76809' };
+      if (/^(?:636368|438935|504175|451416|636297|5067|4576|4011|506699)/.test(raw)) return { nome: 'Elo', cor: '#ffcb00' };
+      return { nome: 'Desconhecida', cor: '' };
+    }
+
+    function getSetor(d) {
+      const map = {
+        '1': 'Aviação / Companhias Aéreas',
+        '2': 'Viagens & Entretenimento',
+        '3': 'Viagens & Bancos (Amex/Diners)',
+        '4': 'Bancário & Financeiro (Visa)',
+        '5': 'Bancário & Financeiro (Master)',
+        '6': 'Merchandising & Bancos',
+        '7': 'Petróleo & Gás',
+        '8': 'Telecomunicações',
+        '9': 'Governo & Nacional',
+      };
+      return map[d] || 'Setor Geral';
+    }
+
+    function getBancoEmissor(bin) {
+      // Simulação simplificada por range de BIN
+      if (/^4/.test(bin))    return 'Emissor filiado à rede Visa';
+      if (/^51/.test(bin))   return 'Banco Itaú / Bradesco';
+      if (/^52/.test(bin))   return 'Banco Santander';
+      if (/^53/.test(bin))   return 'Banco do Brasil';
+      if (/^54/.test(bin))   return 'Caixa Econômica Federal';
+      if (/^55/.test(bin))   return 'Nubank / Inter';
+      if (/^2[2-7]/.test(bin)) return 'Emissor rede Mastercard (global)';
+      if (/^3[47]/.test(bin))  return 'American Express';
+      return 'Emissor não mapeado';
+    }
+
+    function getProduto(d678) {
+      const c = parseInt(d678[2] || 0);
+      if (c <= 2) return 'Crédito Básico';
+      if (c <= 5) return 'Débito';
+      if (c <= 7) return 'Pré-pago / Gift Card';
+      return 'Crédito Premium / Infinite';
+    }
+
+    function analisar() {
+      const raw   = document.getElementById('cartao').value.replace(/\D/g, '');
+      const painel = document.getElementById('painel');
+      const pStatus = document.getElementById('p-status');
+      const prevSt  = document.getElementById('prev-status');
+
+      if (raw.length < 13 || raw.length > 16) {
+        alert('O número deve ter entre 13 e 16 dígitos.');
+        return;
+      }
+
+      const valido   = luhn(raw);
+      const bandeira = getBandeira(raw);
+
+      pStatus.textContent = valido ? '✔ VÁLIDO (Luhn OK)' : '✘ INVÁLIDO (Luhn falhou)';
+      pStatus.className   = 'valor ' + (valido ? 'ok' : 'err');
+
+      prevSt.className    = 'status-badge ' + (valido ? 'valido' : 'invalido');
+      prevSt.textContent  = valido ? 'VÁLIDO' : 'INVÁLIDO';
+
+      document.getElementById('p-bandeira').textContent = bandeira.nome;
+      document.getElementById('prev-bandeira').textContent = bandeira.nome;
+      document.getElementById('p-setor').textContent    = getSetor(raw[0]);
+      document.getElementById('p-banco').textContent    = getBancoEmissor(raw);
+      document.getElementById('p-produto').textContent  = getProduto(raw.substring(5, 8));
+      document.getElementById('p-len').textContent      = `${raw.length} dígitos`;
+
+      painel.classList.add('show');
+    }
+
+    document.getElementById('cartao').addEventListener('keydown', e => {
+      if (e.key === 'Enter') analisar();
+    });
+  </script>
+</body>
+</html>

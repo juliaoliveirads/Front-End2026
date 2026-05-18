@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Exercício 02 – Conversor de Temperatura</title>
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;700;800&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #0b0c10;
+      --surface: #13141a;
+      --border: #222430;
+      --gold: #c9a84c;
+      --gold-light: #e8c97a;
+      --text: #e8e8f0;
+      --muted: #6b6d80;
+      --blue: #4d9de0;
+      --orange: #e07d3a;
+      --radius: 12px;
+    }
+
+    body {
+      font-family: 'Syne', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 2rem;
+    }
+
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background: radial-gradient(ellipse 60% 50% at 50% -10%, rgba(201,168,76,.10), transparent);
+      pointer-events: none;
+    }
+
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 3rem 2.5rem;
+      width: 100%;
+      max-width: 480px;
+      box-shadow: 0 24px 64px rgba(0,0,0,.5);
+      animation: fadeUp .5s ease both;
+    }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(20px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    .badge {
+      display: inline-block;
+      font-family: 'DM Mono', monospace;
+      font-size: .7rem;
+      letter-spacing: .1em;
+      color: var(--gold);
+      border: 1px solid var(--gold);
+      border-radius: 4px;
+      padding: 2px 8px;
+      margin-bottom: 1rem;
+    }
+
+    h1 { font-size: 1.8rem; font-weight: 800; line-height: 1.15; margin-bottom: .5rem; }
+    h1 span { color: var(--gold); }
+    p.sub { color: var(--muted); font-size: .9rem; margin-bottom: 2.5rem; }
+
+    .conversor {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    .field {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: .5rem;
+    }
+
+    label {
+      font-size: .75rem;
+      letter-spacing: .08em;
+      color: var(--muted);
+      text-transform: uppercase;
+      display: flex;
+      align-items: center;
+      gap: .4rem;
+    }
+
+    .dot-c { width: 8px; height: 8px; border-radius: 50%; background: var(--blue); display: inline-block; }
+    .dot-f { width: 8px; height: 8px; border-radius: 50%; background: var(--orange); display: inline-block; }
+
+    input[type="number"] {
+      width: 100%;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      color: var(--text);
+      font-family: 'DM Mono', monospace;
+      font-size: 1.6rem;
+      padding: .85rem 1rem;
+      outline: none;
+      transition: border-color .2s;
+      -moz-appearance: textfield;
+    }
+
+    input[type="number"]::-webkit-inner-spin-button,
+    input[type="number"]::-webkit-outer-spin-button { -webkit-appearance: none; }
+
+    .field-c input:focus { border-color: var(--blue); }
+    .field-f input:focus { border-color: var(--orange); }
+
+    .arrow {
+      font-size: 1.4rem;
+      color: var(--gold);
+      user-select: none;
+      margin-top: 1.4rem;
+    }
+
+    .info-bar {
+      margin-top: 2rem;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 1rem 1.25rem;
+      display: flex;
+      flex-direction: column;
+      gap: .4rem;
+    }
+
+    .info-bar span {
+      font-size: .82rem;
+      color: var(--muted);
+      font-family: 'DM Mono', monospace;
+    }
+
+    .info-bar strong { color: var(--gold); }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <span class="badge">EX 02</span>
+    <h1>Conversor de <span>Temperatura</span></h1>
+    <p class="sub">Digite em qualquer campo — a conversão acontece em tempo real.</p>
+
+    <div class="conversor">
+      <div class="field field-c">
+        <label><span class="dot-c"></span> Celsius (°C)</label>
+        <input type="number" id="celsius" placeholder="0" step="0.1" oninput="deC()"/>
+      </div>
+      <div class="arrow">⇄</div>
+      <div class="field field-f">
+        <label><span class="dot-f"></span> Fahrenheit (°F)</label>
+        <input type="number" id="fahrenheit" placeholder="32" step="0.1" oninput="deF()"/>
+      </div>
+    </div>
+
+    <div class="info-bar">
+      <span>F = (C × 9/5) + 32</span>
+      <span>C = (F − 32) × 5/9</span>
+      <span style="margin-top:.3rem">Referência: <strong>0°C = 32°F</strong> · <strong>100°C = 212°F</strong></span>
+    </div>
+  </div>
+
+  <script>
+    function deC() {
+      const c = parseFloat(document.getElementById('celsius').value);
+      const fEl = document.getElementById('fahrenheit');
+      fEl.value = isNaN(c) ? '' : ((c * 9/5) + 32).toFixed(2);
+    }
+
+    function deF() {
+      const f = parseFloat(document.getElementById('fahrenheit').value);
+      const cEl = document.getElementById('celsius');
+      cEl.value = isNaN(f) ? '' : ((f - 32) * 5/9).toFixed(2);
+    }
+  </script>
+</body>
+</html>
