@@ -1,0 +1,555 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tutorial Detalhado: Construindo o Jogo Contexto do Zero</title>
+    <style>
+        :root {
+            --slate-50: #f8fafc;
+            --slate-100: #f1f5f9;
+            --slate-200: #e2e8f0;
+            --slate-300: #cbd5e1;
+            --slate-400: #94a3b8;
+            --slate-600: #475569;
+            --slate-700: #334155;
+            --slate-800: #1e293b;
+            --slate-900: #0f172a;
+            --brand-blue: #149eca;
+            --brand-dark: #23272f;
+            --text-main: #23272f;
+            --text-muted: #404756;
+            --bg-code: #f6f7f9;
+            --highlight: #e01e5a;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            line-height: 1.7;
+            color: var(--text-main);
+            max-width: 960px;
+            margin: 0 auto;
+            padding: 60px 24px;
+            background-color: #ffffff;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        header {
+            border-bottom: 2px solid var(--slate-100);
+            padding-bottom: 32px;
+            margin-bottom: 48px;
+        }
+
+        .category {
+            text-transform: uppercase;
+            font-size: 0.85rem;
+            font-weight: 700;
+            letter-spacing: 0.15em;
+            color: var(--brand-blue);
+            margin-bottom: 12px;
+        }
+
+        h1 {
+            font-size: 3.2rem;
+            font-weight: 800;
+            color: var(--slate-900);
+            margin: 0 0 20px 0;
+            letter-spacing: -0.03em;
+            line-height: 1.15;
+        }
+
+        .lead {
+            font-size: 1.35rem;
+            color: var(--text-muted);
+            margin: 0;
+            line-height: 1.5;
+        }
+
+        h2 {
+            font-size: 2.1rem;
+            font-weight: 700;
+            color: var(--slate-900);
+            margin-top: 56px;
+            margin-bottom: 24px;
+            letter-spacing: -0.02em;
+            border-bottom: 1px solid var(--slate-200);
+            padding-bottom: 12px;
+        }
+
+        h3 {
+            font-size: 1.45rem;
+            font-weight: 600;
+            color: var(--slate-900);
+            margin-top: 36px;
+            margin-bottom: 16px;
+        }
+
+        p {
+            margin: 18px 0;
+            color: var(--text-muted);
+            font-size: 1.1rem;
+        }
+
+        ul, ol {
+            padding-left: 28px;
+            margin: 18px 0;
+        }
+
+        li {
+            margin-bottom: 10px;
+            color: var(--text-muted);
+            font-size: 1.1rem;
+        }
+
+        .callout {
+            background-color: var(--slate-50);
+            border-left: 5px solid var(--slate-400);
+            padding: 24px;
+            border-radius: 0 16px 16px 0;
+            margin: 36px 0;
+            box-sizing: border-box;
+        }
+
+        .callout.pitfall {
+            background-color: #fff5f5;
+            border-left-color: #ef4444;
+        }
+
+        .callout.pitfall h4 {
+            color: #c53030;
+            margin: 0 0 10px 0;
+            font-size: 1.2rem;
+            font-weight: 700;
+        }
+
+        .callout.note {
+            background-color: #f0f9ff;
+            border-left-color: var(--brand-blue);
+        }
+
+        .callout.note h4 {
+            color: #0369a1;
+            margin: 0 0 10px 0;
+            font-size: 1.2rem;
+            font-weight: 700;
+        }
+
+        pre {
+            background-color: var(--bg-code);
+            padding: 24px;
+            border-radius: 12px;
+            overflow-x: auto;
+            font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+            font-size: 0.95rem;
+            margin: 24px 0;
+            border: 1px solid var(--slate-200);
+            line-height: 1.5;
+        }
+
+        code {
+            font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+            background-color: var(--bg-code);
+            padding: 3px 6px;
+            border-radius: 6px;
+            font-size: 0.92rem;
+            color: var(--highlight);
+        }
+
+        pre code {
+            padding: 0;
+            background-color: transparent;
+            color: var(--slate-900);
+        }
+
+        hr {
+            border: 0;
+            border-top: 2px solid var(--slate-100);
+            margin: 56px 0;
+        }
+
+        .step-number {
+            display: inline-block;
+            background-color: var(--brand-dark);
+            color: #ffffff;
+            border-radius: 50%;
+            width: 32px;
+            height: 32px;
+            text-align: center;
+            line-height: 32px;
+            font-size: 0.95rem;
+            font-weight: 700;
+            margin-right: 12px;
+            vertical-align: middle;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="category">DOCUMENTAÇÃO DO PROJETO</div>
+        <h1>Construindo o Contexto com React</h1>
+        <p class="lead">Um guia completo e aprofundado para engenharia de estados imutáveis, renderização de layouts condicionais e cálculo de distribuições proporcionais contínuas.</p>
+    </header>
+
+    <main>
+        <p>Neste tutorial exaustivo, vamos decompor cada linha de código necessária para recriar o motor de regras e a interface reativa do jogo <strong>Contexto</strong>. Abordaremos tópicos essenciais de ciclo de vida do React, manipulação de vetores na memória interna do cliente e como as propriedades computadas definem a largura e o preenchimento exato dos elementos gráficos em tela.</p>
+
+        <h2>Arquitetura do Mecanismo</h2>
+        <p>Para construir esta aplicação, o React opera sobre o conceito de <strong>Programação Declarativa</strong>. Em vez de dizermos ao navegador como mudar os elementos visuais passo a passo usando seletores como <code>document.getElementById()</code>, criamos variáveis internas chamadas <strong>Estados</strong>. Quando o valor de um Estado muda, o React redesenha automaticamente a tela de forma otimizada usando seu DOM Virtual.</p>
+
+        <div class="callout note">
+            <h4>Pré-requisitos Conceituais</h4>
+            <p>Para o aproveitamento total deste documento, é importante compreender o uso de funções de alta ordem de JavaScript, especificamente o método <code>.map()</code> para transformações de listas e o operador de espalhamento (<em>Spread Operator</em> <code>...</code>) para cópia de estruturas em profundidade.</p>
+        </div>
+
+        <h2>Estrutura Estrutural Inicial</h2>
+        <p>Iniciaremos mapeando a fundação do arquivo <code>index.html</code>. Nele, embutiremos o ambiente reativo através de dependências externas via CDN e abriremos o interpretador Babel.</p>
+
+        <pre><code>&lt;!DOCTYPE html&gt;
+&lt;html lang="pt-BR"&gt;
+&lt;head&gt;
+    &lt;meta charset="UTF-8"&gt;
+    &lt;meta name="viewport" content="width=device-width, initial-scale=1.0"&gt;
+    &lt;title&gt;Contexto Unlimited&lt;/title&gt;
+    
+    &lt;!-- Importação do motor de gerenciamento lógico do React --&gt;
+    &lt;script src="https://unpkg.com/react@18/umd/react.development.js" crossorigin&gt;&lt;/script&gt;
+    
+    &lt;!-- Importação do motor de renderização gráfica para a Web (DOM) --&gt;
+    &lt;script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js" crossorigin&gt;&lt;/script&gt;
+    
+    &lt;!-- Interpretador para transpilar sintaxe JSX e ES6 em tempo real na máquina do cliente --&gt;
+    &lt;script src="https://unpkg.com/@babel/standalone/babel.min.js"&gt;&lt;/script&gt;
+
+    &lt;style&gt;
+        /* Toda a folha de estilo modular do jogo é aplicada aqui */
+        :root {
+            --bg-main: #192229;
+            --bg-card: #222e35;
+            --text-main: #f0f2f5;
+            --color-green: #0bb475;
+            --color-pink: #f62e6d;
+        }
+        body { background-color: var(--bg-main); color: var(--text-main); margin: 0; }
+    &lt;/style&gt;
+&lt;/head&gt;
+&lt;body&gt;
+
+    &lt;!-- Elemento âncora onde o React irá construir toda a aplicação --&gt;
+    &lt;div id="root"&gt;&lt;/div&gt;
+
+    &lt;script type="text/babel"&gt;
+        // Todo o código de lógica do React que criaremos adiante será posicionado aqui.
+    &lt;/script&gt;
+&lt;/body&gt;
+&lt;/html&gt;</code></pre>
+
+        <h2><span class="step-number">1</span>Definição do Dicionário Semântico Fixo</h2>
+        <p>O jogo precisa associar palavras a valores de proximidade numéricos. A palavra ideal recebe o peso #1. Colocamos esse mapeamento em uma constante global chamada <code>DICIONARIO_COMPLETO</code>, alocada fora da nossa função reativa para mitigar reprocessamentos repetitivos desnecessários a cada ciclo de atualização.</p>
+
+        <pre><code>const PALAVRA_SECRETA = 'computador';
+
+const DICIONARIO_COMPLETO = {
+    'computador': 1,
+    'notebook': 2,
+    'laptop': 3,
+    'pc': 4,
+    'software': 12,
+    'hardware': 24,
+    'tecnologia': 44,
+    'shopping': 88,
+    'internet': 150,
+    'tela': 280,
+    'teclado': 620,
+    'mouse': 850,
+    'programação': 1100,
+    'site': 1400,
+    'ponte': 1873,
+    'loja': 2364,
+    'banheiro': 2896,
+    'casa': 3314,
+    'fazenda': 3585,
+    'cabo': 4846,
+    'celular': 5200,
+    'telefone': 7100,
+    'trabalho': 9300,
+    'janela': 12500,
+    'web': 12519,
+    'cadeira': 16200,
+    'mesa': 19100,
+    'fila': 23798,
+    'roupa': 29146,
+    'banana': 45000
+};</code></pre>
+
+        <h2><span class="step-number">2</span>Instanciação de Estados Fundamentais do Componente</h2>
+        <p>Dentro da função do componente <code>App</code>, invocamos o Hook <code>useState</code> do React para criar pontos de memória volátil que controlam o comportamento dinâmico e o fluxo de dados na interface.</p>
+
+        <pre><code>function App() {
+    // Armazena a string exata que o usuário digita na barra de pesquisas
+    const [palpite, setPalpite] = useState('');
+    
+    // Array contendo objetos com os palpites enviados e suas posições calculadas
+    const [historico, setHistorico] = useState([]);
+    
+    // Altera para 'true' quando o jogador digita o termo correto e encerra inputs
+    const [ganhou, setGanhou] = useState(false);
+    
+    // Estados booleanos isolados para gerenciar o estado aberto/fechado das janelas flutuantes
+    const [menuAberto, setMenuAberto] = useState(false);
+    const [modalAjuda, setModalAjuda] = useState(false);
+    const [modalDica, setModalDica] = useState(false);
+    const [modalRanking, setModalRanking] = useState(false);
+    
+    // Mensagens de aviso e texto explicativo que alimentam as telas modais
+    const [mensagemStatus, setMensagemStatus] = useState('');
+    const [mensagemDica, setMensagemDica] = useState('');
+    
+    // Cria uma referência de controle para podermos manipular o foco do elemento HTML manualmente
+    const inputRef = useRef(null);
+
+    // O restante da lógica será incluído abaixo deste ponto
+}</code></pre>
+
+        <div class="callout pitfall">
+            <h4>A Regra da Mutabilidade Direta</h4>
+            <p>Em hipótese alguma altere o estado do React fazendo atribuições diretas, como <code>historico = []</code> ou <code>ganhou = true</code>. O React monitora as alterações de dados exclusivamente através das funções despachantes criadas pelo Hook (ex: <code>setHistorico</code>, <code>setGanhou</code>).</p>
+        </div>
+
+        <h2><span class="step-number">3</span>O Algoritmo Fuzzy de Hash para Palavras Extras</h2>
+        <p>Para evitar que o jogo rejeite termos que não estejam pré-cadastrados em nossa constante global, criamos um mecanismo matemático determinístico. Esse método lê os códigos de caracteres individuais da string e gera um número estável, garantindo que a aplicação nunca pare de responder.</p>
+
+        <pre><code>const gerarRankFuzzy = (palavra) => {
+    const termo = palavra.toLowerCase().trim();
+    
+    // Se for o alvo, o rank absoluto é o topo
+    if (termo === PALAVRA_SECRETA) return 1;
+    
+    // Se a palavra constar no dicionário estático, retorna seu valor real
+    if (DICIONARIO_COMPLETO[termo]) return DICIONARIO_COMPLETO[termo];
+
+    // Algoritmo clássico de espalhamento numérico para palavras não catalogadas
+    let hash = 0;
+    for (let i = 0; i < termo.length; i++) {
+        hash = termo.charCodeAt(i) + ((hash << 5) - hash);
+    }
+    
+    // Normaliza para situar os termos extras em um quadrante distante do topo
+    return Math.abs(hash % 40000) + 5000;
+};</code></pre>
+
+        <h2><span class="step-number">4</span>Despachando Palpites e Garantindo a Imutabilidade</h2>
+        <p>A função <code>enviarPalpite</code> manipula os dados recebidos pelo formulário. Quando o formulário é enviado, processamos a palavra, geramos sua posição e a inserimos na lista histórica preservando a imutabilidade por meio do empacotamento funcional.</p>
+
+        <pre><code>const enviarPalpite = (e) => {
+    // Interrompe o envio padrão do formulário que causaria o reload da página inteira
+    e.preventDefault();
+    setMensagemStatus('');
+    
+    if (!palpite.trim() || ganhou) return;
+
+    const termo = palpite.toLowerCase().trim();
+
+    // Validador de redundância: verifica se o objeto já existe no histórico atual
+    if (historico.some(item => item.palavra === termo)) {
+        setMensagemStatus('A palavra já foi.');
+        setPalpite('');
+        return;
+    }
+
+    const posicao = gerarRankFuzzy(termo);
+    const novaTentativa = { palavra: termo, posicao, foiDica: false };
+
+    // Atualização Imutável com Ordenação Dinâmica:
+    // Copiamos a lista anterior e aplicamos .sort() para ordenar as melhores palavras no topo
+    setHistorico(prev => [novaTentativa, ...prev].sort((a, b) => a.posicao - b.posicao));
+    
+    // Limpa o conteúdo escrito no input de texto
+    setPalpite('');
+    
+    // Retorna automaticamente o cursor para dentro da caixinha de digitação do usuário
+    inputRef.current?.focus();
+
+    if (posicao === 1) {
+        setGanhou(true);
+    }
+};</code></pre>
+
+        <h2><span class="step-number">5</span>Lógica de Redução de Estado do Botão de Dica</h2>
+        <p>A funcionalidade de dicas calcula o menor número de rank contido nas tentativas atuais e o divide de forma exata por 2. A partir desse valor-alvo intermediário, o algoritmo varre o dicionário em busca da palavra correspondente ideal.</p>
+
+        <pre><code>const acionarDica = () => {
+    setMenuAberto(false);
+    setMensagemStatus('');
+    if (historico.length === 0) return;
+
+    // Acha o menor valor numérico presente dentro do array de objetos do histórico
+    const melhorChute = Math.min(...historico.map(h => h.posicao));
+    
+    // Executa a operação matemática central de redução definida pela regra de negócio
+    const alvoDica = Math.max(1, Math.floor(melhorChute / 2));
+
+    let melhorPalavra = '';
+    let menorDiferenca = Infinity;
+
+    // Varre as chaves do dicionário estático para encontrar o termo não utilizado mais próximo
+    Object.entries(DICIONARIO_COMPLETO).forEach(([palavra, posicao]) => {
+        if (!historico.some(h => h.palavra === palavra)) {
+            const diferenca = Math.abs(posicao - alvoDica);
+            if (diferenca < menorDiferenca) {
+                menorDiferenca = diferenca;
+                melhorPalavra = palavra;
+            }
+        }
+    });
+
+    if (!melhorPalavra) {
+        melhorPalavra = `alvo_${alvoDica}`;
+        DICIONARIO_COMPLETO[melhorPalavra] = alvoDica;
+    }
+
+    const posicaoDica = DICIONARIO_COMPLETO[melhorPalavra];
+    const novaTentativa = { palavra: melhorPalavra, posicao: posicaoDica, foiDica: true };
+
+    // Insere a palavra da dica diretamente no fluxo do histórico reordenado
+    setHistorico(prev => [novaTentativa, ...prev].sort((a, b) => a.posicao - b.posicao));
+    
+    // Escreve a explicação detalhada que será impressa dentro da modal de dica
+    setMensagemDica(`Como o seu melhor chute foi #${melhorChute}, dividimos por 2 para buscar o alvo #${alvoDica}.\n\nPalavra encontrada: "${melhorPalavra}" na posição #${posicaoDica}.`);
+    setModalDica(true);
+
+    if (posicaoDica === 1) {
+        setGanhou(true);
+    }
+};</code></pre>
+
+        <h2><span class="step-number">6</span>Cálculo Proporcional Logarítmico Contínuo</h2>
+        <p>Para evitar distorções no preenchimento visual dos cards de palavras muito distantes, o preenchimento não utiliza valores fixos ou porcentagens lineares cruas. Implementamos um cálculo matemático baseado no logaritmo natural do valor máximo para suavizar a diferença entre as barras de progresso de forma contínua.</p>
+
+        <pre><code>const calcularLarguraPreenchimento = (posicao) => {
+    // A palavra secreta ocupa a totalidade da barra
+    if (posicao === 1) return 100;
+    
+    const rankMaximoMaximo = 50000;
+    
+    // Math.log mitiga as diferenças gigantescas nas curvas de distribuição numérica
+    const fatorProporcional = Math.log(rankMaximoMaximo) - Math.log(posicao);
+    const baseLogaritmica = Math.log(rankMaximoMaximo);
+    
+    let porcentagem = (fatorProporcional / baseLogaritmica) * 100;
+    
+    // Aplica restrições de design para que os números de rank fiquem visíveis no fim dos cards
+    if (posicao <= 300) {
+        return Math.min(94, Math.max(82, porcentagem));
+    } else {
+        return Math.min(80, Math.max(4, porcentagem));
+    }
+};</code></pre>
+
+        <h2><span class="step-number">7</span>Estrutura Visual e Renderização de Modais Pós-Vitória</h2>
+        <p>No bloco final do componente, retornamos a árvore estrutural escrita em JSX. Para exibir o ranking completo com todas as palavras catalogadas após o acerto, passamos uma função de ordenação direta sobre a constante de dados manipulada no fechamento do modal.</p>
+
+        <pre><code>return (
+    &lt;div className="app-container"&gt;
+        &lt;header className="nav-header"&gt;
+            &lt;button className="nav-icon-btn"&gt;←&lt;/button&gt;
+            &lt;h1 className="logo-title"&gt;contexto ∞&lt;/h1&gt;
+            &lt;button className="nav-icon-btn" onClick={() =&gt; setMenuAberto(!menuAberto)}&gt;⋮&lt;/button&gt;
+
+            {/* Menu Renderizado Condicionalmente */}
+            {menuAberto && (
+                &lt;div className="dropdown-menu"&gt;
+                    &lt;button className="dropdown-item" onClick={() =&gt; { setModalAjuda(true); setMenuAberto(false); }}&gt;
+                        &lt;span&gt;❓&lt;/span&gt; Como jogar
+                    &lt;/button&gt;
+                    &lt;button className="dropdown-item" onClick={acionarDica} disabled={historico.length === 0}&gt;
+                        &lt;span&gt;💡&lt;/span&gt; Dica
+                    &lt;/button&gt;
+                &lt;/div&gt;
+            )}
+        &lt;/header&gt;
+
+        &lt;main className="game-body"&gt;
+            &lt;div className="tentativas-count"&gt;
+                Tentativas: {historico.filter(h =&gt; !h.foiDica).length}
+            &lt;/div&gt;
+
+            {/* Banner de Conclusão com Acesso ao Ranking */}
+            {ganhou && (
+                &lt;div className="vitoria-banner"&gt;
+                    &lt;h2&gt;Você acertou! 🎉&lt;/h2&gt;
+                    &lt;p&gt;A palavra secreta era &lt;strong&gt;{PALAVRA_SECRETA}&lt;/strong&gt;.&lt;/p&gt;
+                    &lt;div style={{ display: 'flex', gap: '10px' }}&gt;
+                        &lt;button onClick={() =&gt; setModalRanking(true)} className="btn-action"&gt;Ver Posições&lt;/button&gt;
+                        &lt;button onClick={() =&gt; window.location.reload()} className="btn-restart"&gt;Jogar novamente&lt;/button&gt;
+                    &lt;/div&gt;
+                &lt;/div&gt;
+            )}
+
+            &lt;form onSubmit={enviarPalpite} className="input-form"&gt;
+                &lt;input
+                    ref={inputRef}
+                    type="text"
+                    value={palpite}
+                    onChange={(e) =&gt; setPalpite(e.target.value)}
+                    placeholder="digite uma palavra"
+                    disabled={ganhou}
+                    autoFocus
+                    autoComplete="off"
+                /&gt;
+            &lt;/form&gt;
+
+            {mensagemStatus && &lt;div className="status-mensagem"&gt;{mensagemStatus}&lt;/div&gt;}
+
+            {/* Mapeamento e Criação Automática dos Cards de Palpite */}
+            &lt;div className="guesses-list"&gt;
+                {historico.map((item, index) =&gt; {
+                    const eRankAlto = item.posicao <= 300;
+                    return (
+                        &lt;div key={index} className={`guess-card ${eRankAlto ? 'high-rank' : 'low-rank'}`}&gt;
+                            &lt;div 
+                                className="progress-bar-fill" 
+                                style={{ width: `${calcularLarguraPreenchimento(item.posicao)}%` }} 
+                            /&gt;
+                            &lt;div className="guess-info"&gt;
+                                &lt;span&gt;
+                                    {item.palavra}
+                                    {item.foiDica && &lt;span className="dica-tag"&gt;dica&lt;/span&gt;}
+                                // ... fim do bloco estrutural interno dos cards
+                                &lt;/span&gt;
+                                &lt;span&gt;{item.posicao}&lt;/span&gt;
+                            &lt;/div&gt;
+                        &lt;/div&gt;
+                    );
+                })}
+            &lt;/div&gt;
+        &lt;/main&gt;
+
+        {/* Modal Ordenado do Ranking Geral */}
+        {modalRanking && (
+            &lt;div className="modal-overlay" onClick={() =&gt; setModalRanking(false)}&gt;
+                &lt;div className="modal-content" onClick={e =&gt; e.stopPropagation()}&gt;
+                    &lt;button className="modal-close" onClick={() =&gt; setModalRanking(false)}&gt;✕&lt;/button&gt;
+                    &lt;h3&gt;🏆 Ranking Completo de Posições&lt;/h3&gt;
+                    &lt;div className="ranking-scroll"&gt;
+                        {Object.entries(DICIONARIO_COMPLETO)
+                            .sort((a, b) =&gt; a[1] - b[1])
+                            .map(([palavra, posicao]) =&gt; (
+                                &lt;div key={posicao} className={`ranking-row ${posicao === 1 ? 'destaque' : ''}`}&gt;
+                                    &lt;span&gt;{palavra}&lt;/span&gt;
+                                    &lt;span&gt;#{posicao}&lt;/span&gt;
+                                &lt;/div&gt;
+                            ))}
+                    &lt;/div&gt;
+                &lt;/div&gt;
+            &lt;/div&gt;
+        )}
+    &lt;/div&gt;
+);</code></pre>
+
+        <hr />
+        <p>Com essa sequência metodológica detalhada, cobrimos a totalidade da engenharia por trás do funcionamento reativo e matemático do jogo Contexto utilizando as melhores práticas do ecossistema React.</p>
+    </main>
+
+</body>
+</html>
