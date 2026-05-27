@@ -1,0 +1,606 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contexto Unlimited</title>
+    
+    <script src="https://unpkg.com/react@18/umd/react.development.js" crossorigin></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js" crossorigin></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+
+    <style>
+        :root {
+            --bg-main: #192229;
+            --bg-card: #222e35;
+            --bg-dropdown: #222e35;
+            --border-color: rgba(255, 255, 255, 0.1);
+            --text-main: #f0f2f5;
+            --text-placeholder: #8696a0;
+            --text-muted: #8696a0;
+            --color-green: #0bb475;
+            --color-pink: #f62e6d;
+        }
+
+        body {
+            margin: 0;
+            background-color: var(--bg-main);
+            color: var(--text-main);
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        .app-container {
+            max-width: 530px;
+            margin: 0 auto;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            padding: 0 16px;
+        }
+
+        .nav-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            height: 56px;
+            position: relative;
+            margin-bottom: 8px;
+        }
+
+        .nav-icon-btn {
+            background: none;
+            border: none;
+            color: var(--text-main);
+            font-size: 20px;
+            cursor: pointer;
+            padding: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .logo-title {
+            font-size: 22px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin: 0;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .dropdown-menu {
+            position: absolute;
+            top: 50px;
+            right: 0;
+            background-color: var(--bg-dropdown);
+            border-radius: 12px;
+            box-shadow: 0 4px 16px rgba(0,0,0,0.4);
+            width: 190px;
+            z-index: 100;
+            display: flex;
+            flex-direction: column;
+            padding: 6px 0;
+            border: 1px solid var(--border-color);
+        }
+
+        .dropdown-item {
+            background: none;
+            border: none;
+            color: var(--text-main);
+            text-align: left;
+            padding: 12px 16px;
+            font-size: 15px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .dropdown-item:hover {
+            background-color: rgba(255, 255, 255, 0.05);
+        }
+
+        .dropdown-item:disabled {
+            opacity: 0.4;
+            cursor: not-allowed;
+        }
+
+        .game-body {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .tentativas-count {
+            font-size: 13px;
+            font-weight: 700;
+            text-transform: uppercase;
+            color: var(--text-main);
+            margin: 4px 0;
+            letter-spacing: 0.5px;
+        }
+
+        .input-form {
+            width: 100%;
+        }
+
+        .input-form input {
+            width: 100%;
+            background-color: transparent;
+            border: 1.5px solid #4a5568;
+            border-radius: 4px;
+            padding: 12px 14px;
+            color: var(--text-main);
+            font-size: 16px;
+            outline: none;
+            box-sizing: border-box;
+        }
+
+        .input-form input::placeholder {
+            color: var(--text-placeholder);
+        }
+
+        .input-form input:focus {
+            border-color: #718096;
+        }
+
+        .status-mensagem {
+            font-size: 16px;
+            color: var(--text-main);
+            margin: 4px 0;
+            animation: fadeIn 0.15s ease;
+        }
+
+        .guesses-list {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            margin-top: 4px;
+        }
+
+        .guess-card {
+            background-color: #1c262d;
+            border-radius: 6px;
+            height: 42px;
+            display: flex;
+            align-items: center;
+            position: relative;
+            overflow: hidden;
+            box-sizing: border-box;
+        }
+
+        .guess-card.high-rank {
+            border: 2px solid #ffffff;
+            background-color: #1c262d;
+        }
+
+        .guess-card.low-rank {
+            border: 2px solid #ffffff;
+            background-color: #1c262d;
+        }
+
+        .progress-bar-fill {
+            position: absolute;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            z-index: 1;
+            border-top-left-radius: 4px;
+            border-bottom-left-radius: 4px;
+        }
+
+        .guess-card.high-rank .progress-bar-fill {
+            background-color: var(--color-green);
+        }
+
+        .guess-card.low-rank .progress-bar-fill {
+            background-color: var(--color-pink);
+        }
+
+        .guess-info {
+            position: absolute;
+            left: 14px;
+            right: 14px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 16px;
+            font-weight: 700;
+            z-index: 2;
+        }
+
+        .guess-card .guess-info {
+            color: #ffffff;
+        }
+
+        .dica-tag {
+            font-size: 11px;
+            background-color: rgba(255,255,255,0.25);
+            padding: 2px 6px;
+            border-radius: 3px;
+            margin-left: 6px;
+            font-weight: 400;
+        }
+
+        .vitoria-banner {
+            background-color: rgba(11, 180, 117, 0.2);
+            border: 1px solid var(--color-green);
+            border-radius: 6px;
+            padding: 16px;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .btn-restart, .btn-action {
+            background-color: var(--color-green);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .btn-action {
+            background-color: #4a5568;
+        }
+
+        .btn-action:hover {
+            background-color: #718096;
+        }
+
+        .modal-overlay {
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background-color: rgba(0, 0, 0, 0.5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 200;
+            padding: 16px;
+        }
+
+        .modal-content {
+            background-color: var(--bg-card);
+            padding: 24px;
+            border-radius: 8px;
+            max-width: 440px;
+            width: 100%;
+            position: relative;
+            max-height: 80vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .modal-close {
+            position: absolute;
+            top: 14px; right: 14px;
+            background: none;
+            border: none;
+            color: var(--text-muted);
+            cursor: pointer;
+            font-size: 18px;
+        }
+
+        .ranking-scroll {
+            overflow-y: auto;
+            margin-top: 12px;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            padding-right: 4px;
+        }
+
+        .ranking-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 8px 12px;
+            background-color: rgba(255, 255, 255, 0.05);
+            border-radius: 4px;
+            font-size: 15px;
+        }
+
+        .ranking-row.destaque {
+            background-color: rgba(11, 180, 117, 0.2);
+            font-weight: bold;
+            border: 1px solid var(--color-green);
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-2px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body>
+
+    <div id="root"></div>
+
+    <script type="text/babel">
+        const { useState, useRef } = React;
+
+        const PALAVRA_SECRETA = 'computador';
+
+        // Base léxica completa e estruturada por proximidade semântica real
+        const DICIONARIO_COMPLETO = {
+            'computador': 1,
+            'notebook': 2,
+            'laptop': 3,
+            'pc': 4,
+            'software': 12,
+            'hardware': 24,
+            'tecnologia': 44,
+            'shopping': 88,
+            'internet': 150,
+            'tela': 280,
+            'teclado': 620,
+            'mouse': 850,
+            'programação': 1100,
+            'site': 1400,
+            'ponte': 1873,
+            'loja': 2364,
+            'banheiro': 2896,
+            'casa': 3314,
+            'fazenda': 3585,
+            'cabo': 4846,
+            'celular': 5200,
+            'telefone': 7100,
+            'trabalho': 9300,
+            'janela': 12500,
+            'web': 12519,
+            'cadeira': 16200,
+            'mesa': 19100,
+            'fila': 23798,
+            'roupa': 29146,
+            'banana': 45000
+        };
+
+        function App() {
+            const [palpite, setPalpite] = useState('');
+            const [historico, setHistorico] = useState([]);
+            const [ganhou, setGanhou] = useState(false);
+            const [menuAberto, setMenuAberto] = useState(false);
+            const [modalAjuda, setModalAjuda] = useState(false);
+            const [modalDica, setModalDica] = useState(false);
+            const [modalRanking, setModalRanking] = useState(false);
+            const [mensagemStatus, setMensagemStatus] = useState('');
+            const [mensagemDica, setMensagemDica] = useState('');
+            
+            const inputRef = useRef(null);
+
+            // Calcula dinamicamente um rank estável para palavras fora do dicionário fixo
+            const gerarRankFuzzy = (palavra) => {
+                const termo = palavra.toLowerCase().trim();
+                if (termo === PALAVRA_SECRETA) return 1;
+                if (DICIONARIO_COMPLETO[termo]) return DICIONARIO_COMPLETO[termo];
+
+                let hash = 0;
+                for (let i = 0; i < termo.length; i++) {
+                    hash = termo.charCodeAt(i) + ((hash << 5) - hash);
+                }
+                return Math.abs(hash % 40000) + 5000;
+            };
+
+            const enviarPalpite = (e) => {
+                e.preventDefault();
+                setMensagemStatus('');
+                if (!palpite.trim() || ganhou) return;
+
+                const termo = palpite.toLowerCase().trim();
+
+                if (historico.some(item => item.palavra === termo)) {
+                    setMensagemStatus('A palavra já foi.');
+                    setPalpite('');
+                    return;
+                }
+
+                const posicao = gerarRankFuzzy(termo);
+                const novaTentativa = { palavra: termo, posicao, foiDica: false };
+
+                setHistorico(prev => [novaTentativa, ...prev].sort((a, b) => a.posicao - b.posicao));
+                setPalpite('');
+                inputRef.current?.focus();
+
+                if (posicao === 1) {
+                    setGanhou(true);
+                }
+            };
+
+            const acionarDica = () => {
+                setMenuAberto(false);
+                setMensagemStatus('');
+                if (historico.length === 0) return;
+
+                const melhorChute = Math.min(...historico.map(h => h.posicao));
+                const alvoDica = Math.max(1, Math.floor(melhorChute / 2));
+
+                let melhorPalavra = '';
+                let menorDiferenca = Infinity;
+
+                Object.entries(DICIONARIO_COMPLETO).forEach(([palavra, posicao]) => {
+                    if (!historico.some(h => h.palavra === palavra)) {
+                        const diferenca = Math.abs(posicao - alvoDica);
+                        if (diferenca < menorDiferenca) {
+                            menorDiferenca = diferenca;
+                            melhorPalavra = palavra;
+                        }
+                    }
+                });
+
+                if (!melhorPalavra) {
+                    melhorPalavra = `alvo_${alvoDica}`;
+                    DICIONARIO_COMPLETO[melhorPalavra] = alvoDica;
+                }
+
+                const posicaoDica = DICIONARIO_COMPLETO[melhorPalavra];
+                const novaTentativa = { palavra: melhorPalavra, posicao: posicaoDica, foiDica: true };
+
+                setHistorico(prev => [novaTentativa, ...prev].sort((a, b) => a.posicao - b.posicao));
+                setMensagemDica(`Como o seu melhor chute foi #${melhorChute}, dividimos por 2 para buscar o alvo #${alvoDica}.\n\nPalavra encontrada: "${melhorPalavra}" na posição #${posicaoDica}.`);
+                setModalDica(true);
+
+                if (posicaoDica === 1) {
+                    setGanhou(true);
+                }
+            };
+
+            // Nova distribuição proporcional contínua baseada no ranking real do Contexto
+            const calcularLarguraPreenchimento = (posicao) => {
+                if (posicao === 1) return 100;
+                
+                // Distribuição logarítmica para variação suave entre ranks altos e baixos
+                const rankMaximoMaximo = 50000;
+                const fatorProporcional = Math.log(rankMaximoMaximo) - Math.log(posicao);
+                const baseLogaritmica = Math.log(rankMaximoMaximo);
+                
+                let porcentagem = (fatorProporcional / baseLogaritmica) * 100;
+                
+                // Garante limites visuais proporcionais sem achatar barras de ranks diferentes
+                if (posicao <= 300) {
+                    return Math.min(94, Math.max(82, porcentagem));
+                } else {
+                    return Math.min(80, Math.max(4, porcentagem));
+                }
+            };
+
+            // Mapeia todas as palavras conhecidas ordenadas por rank para exibição final
+            const obterListaRankingCompleto = () => {
+                return Object.entries(DICIONARIO_COMPLETO)
+                    .sort((a, b) => a[1] - b[1]);
+            };
+
+            return (
+                <div className="app-container">
+                    <header className="nav-header">
+                        <button className="nav-icon-btn">←</button>
+                        <h1 className="logo-title">contexto ∞</h1>
+                        <button className="nav-icon-btn" onClick={() => setMenuAberto(!menuAberto)}>⋮</button>
+
+                        {menuAberto && (
+                            <div className="dropdown-menu">
+                                <button className="dropdown-item" onClick={() => { setModalAjuda(true); setMenuAberto(false); }}>
+                                    <span>❓</span> Como jogar
+                                </button>
+                                <button className="dropdown-item" onClick={acionarDica} disabled={historico.length === 0}>
+                                    <span>💡</span> Dica {historico.length === 0 && "(Chute primeiro)"}
+                                </button>
+                                <button className="dropdown-item" onClick={() => window.location.reload()}>
+                                    <span>🏳️</span> Desistir
+                                </button>
+                                <button className="dropdown-item" onClick={() => setMenuAberto(false)}>
+                                    <span>⚙️</span> Configurações
+                                </button>
+                            </div>
+                        )}
+                    </header>
+
+                    <main className="game-body">
+                        <div className="tentativas-count">
+                            Tentativas: {historico.filter(h => !h.foiDica).length}
+                        </div>
+
+                        {ganhou && (
+                            <div className="vitoria-banner">
+                                <h2>Você acertou! 🎉</h2>
+                                <p>A palavra secreta era <strong>{PALAVRA_SECRETA}</strong>.</p>
+                                <div style={{ display: 'flex', gap: '10px' }}>
+                                    <button onClick={() => setModalRanking(true)} className="btn-action">Ver Posições</button>
+                                    <button onClick={() => window.location.reload()} className="btn-restart">Jogar novamente</button>
+                                </div>
+                            </div>
+                        )}
+
+                        <form onSubmit={enviarPalpite} className="input-form">
+                            <input
+                                ref={inputRef}
+                                type="text"
+                                value={palpite}
+                                onChange={(e) => setPalpite(e.target.value)}
+                                placeholder="digite uma palavra"
+                                disabled={ganhou}
+                                autoFocus
+                                autoComplete="off"
+                            />
+                        </form>
+
+                        {mensagemStatus && (
+                            <div className="status-mensagem">{mensagemStatus}</div>
+                        )}
+
+                        <div className="guesses-list">
+                            {historico.map((item, index) => {
+                                const eRankAlto = item.posicao <= 300;
+                                return (
+                                    <div key={index} className={`guess-card ${eRankAlto ? 'high-rank' : 'low-rank'}`}>
+                                        <div 
+                                            className="progress-bar-fill" 
+                                            style={{ width: `${calcularLarguraPreenchimento(item.posicao)}%` }} 
+                                        />
+                                        <div className="guess-info">
+                                            <span>
+                                                {item.palavra}
+                                                {item.foiDica && <span className="dica-tag">dica</span>}
+                                            </span>
+                                            <span>{item.posicao}</span>
+                                        </div>
+                                    </div>
+                                );
+                            })}
+                        </div>
+                    </main>
+
+                    {modalAjuda && (
+                        <div className="modal-overlay" onClick={() => setModalAjuda(false)}>
+                            <div className="modal-content" onClick={e => e.stopPropagation()}>
+                                <button className="modal-close" onClick={() => setModalAjuda(false)}>✕</button>
+                                <h3>Como jogar</h3>
+                                <p>Descubra a palavra secreta. Você pode tentar quantas vezes precisar.</p>
+                                <p>As palavras foram ordenadas de acordo com a semelhança delas com a palavra secreta.</p>
+                                <p>A palavra secreta é o número 1.</p>
+                            </div>
+                        </div>
+                    )}
+
+                    {modalDica && (
+                        <div className="modal-overlay" onClick={() => setModalDica(false)}>
+                            <div className="modal-content" onClick={e => e.stopPropagation()}>
+                                <button className="modal-close" onClick={() => setModalDica(false)}>✕</button>
+                                <h3>💡 Algoritmo de Dica</h3>
+                                <p style={{ whiteSpace: 'pre-line' }}>{mensagemDica}</p>
+                            </div>
+                        </div>
+                    )}
+
+                    {modalRanking && (
+                        <div className="modal-overlay" onClick={() => setModalRanking(false)}>
+                            <div className="modal-content" onClick={e => e.stopPropagation()}>
+                                <button className="modal-close" onClick={() => setModalRanking(false)}>✕</button>
+                                <h3>🏆 Ranking Completo de Posições</h3>
+                                <p>Veja onde estavam as palavras mais próximas do alvo:</p>
+                                <div className="ranking-scroll">
+                                    {obterListaRankingCompleto().map(([palavra, posicao]) => (
+                                        <div key={posicao} className={`ranking-row ${posicao === 1 ? 'destaque' : ''}`}>
+                                            <span>{palavra}</span>
+                                            <span>#{posicao}</span>
+                                        </div>
+                                    ))}
+                                </div>
+                            </div>
+                        </div>
+                    )}
+                </div>
+            );
+        }
+
+        const root = ReactDOM.createRoot(document.getElementById('root'));
+        root.render(<App />);
+    </script>
+</body>
+</html>
